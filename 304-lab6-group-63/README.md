@@ -1,4 +1,4 @@
-# COSC 304 - Introduction to Database Systems<br>Lab 6: Using Java/Python with MySQL and Microsoft SQL Server
+# COSC 304 - Introduction to Database SystemsLab 6: Using Java/Python with MySQL and Microsoft SQL Server
 
 This lab demonstrates how Java and Python programs can connect to MySQL and Microsoft SQL Server, execute SQL queries, and process query results.
 
@@ -191,13 +191,11 @@ Run the program and verify that it displays employee names and salaries.
 ### Python Setup
 
 1. Install the [Microsoft ODBC Driver 18 for SQL Server](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server) for your operating system. This driver must be installed separately from the Python `pyodbc` library.
-
 2. Install the Python library:
 
    ```bash
    python -m pip install pyodbc
    ```
-
 3. Verify that the Microsoft ODBC driver is installed:
 
    ```bash
@@ -205,7 +203,6 @@ Run the program and verify that it displays employee names and salaries.
    ```
 
    The output should include `ODBC Driver 18 for SQL Server`.
-
 4. Open [PythonSQLServer.py](code/PythonSQLServer.py) and verify that its connection settings match the Docker configuration:
 
    ```python
@@ -219,7 +216,6 @@ Run the program and verify that it displays employee names and salaries.
        "TrustServerCertificate=yes;"
    )
    ```
-
 5. Run the Python program to verify that it connects to SQL Server and retrieves employee information.
 
 ### Question 2: Top Project by Department
