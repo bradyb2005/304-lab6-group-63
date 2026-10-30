@@ -3,8 +3,8 @@ OrderJDBC.java - A JDBC program for accessing and updating an order database on 
 
 Lab Assignment #6
 
-Student name:   <your student name>
-University id:  <your university id>
+Student name:   Brady Bracken, Harrison Kayihura
+University id:  40361743, _______
 */
 
 import java.io.File;
