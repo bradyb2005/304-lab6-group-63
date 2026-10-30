@@ -153,7 +153,20 @@ public class OrderJDBC
         StringBuilder output = new StringBuilder();
        
         // TODO: Traverse ResultSet and use StringBuilder.append() to add columns/rows to output string
-        
+        try( Connection connection = connect(); Statement stmt = connection.createStatement();)
+        {
+            ResultSet rst = stmt.executeQuery("SELECT CustomerID, CustomerName FROM Customer");  
+
+            output.append("CustomerId, CustomerName\n");
+            while (rst.next()){
+             output.append(rst.getString("CustomerID"));
+             output.append(", ");
+             output.append(rst.getString("CustomerName"));
+             output.append("\n");
+            }   
+
+        }
+
         return output.toString();
     }
     
@@ -171,8 +184,28 @@ public class OrderJDBC
      */
     public String listCustomerOrders(String customerId) throws SQLException
     {
-        // TODO: Similar to listAllCustomers(), execute query and store results in a StringBuilder, then output as a String
-        return "";
+        StringBuilder output = new StringBuilder();
+
+        try(Connection connection = connect(); Statement stmt = connection.createStatement();)
+        {
+            ResultSet rst = stmt.executeQuery("SELECT OrderId, OrderDate, CustomerId, EmployeeId, Total FROM Order WHERE CustomerId = '" + customerId + "'");
+
+            output.append("OrderId, OrderDate, CustomerId, EmployeeId, Total\n");
+            while (rst.next()){
+                output.append(rst.getString("OrderId"));
+                output.append(", ");
+                output.append(rst.getDate("OrderDate"));
+                output.append(", ");
+                output.append(rst.getString("CustomerId"));
+                output.append(", ");
+                output.append(rst.getString("EmployeeId"));
+                output.append(", ");
+                output.append(rst.getString("Total"));
+                output.append("\n");
+            }   
+
+        }
+        return output.toString();
     }
     
     /**
