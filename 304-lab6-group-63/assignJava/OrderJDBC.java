@@ -217,8 +217,10 @@ public class OrderJDBC
      */
     public ResultSet listLineItemsForOrder(String orderId) throws SQLException
     {
-        // TODO: Use a PreparedStatement for this query.  Return the ResultSet.
-        return null; 
+        String sql = "SELECT * FROM lineitem WHERE orderId = ?";
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        pstmt.setString(1, orderId);
+        return pstmt.executeQuery(); 
     }
     
     /**
@@ -231,8 +233,10 @@ public class OrderJDBC
      */
     public ResultSet computeOrderTotal(String orderId) throws SQLException
     {
-        // TODO: Use a PreparedStatement for this query.  Return the ResultSet.
-        return null;
+        String sql = "SELECT SUM(price * quantity) AS orderTotal FROM lineitem WHERE orderId = ?";
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        pstmt.setString(1, orderId);
+        return pstmt.executeQuery();
     }
     
     /**
@@ -241,7 +245,12 @@ public class OrderJDBC
      */
     public void addCustomer(String customerId, String customerName) throws SQLException
     {
-        // TODO: Use a PreparedStatement for this INSERT.        
+        String sql = "INSERT INTO customer (customerId, customerName) VALUES (?, ?)";
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, customerId);
+            pstmt.setString(2, customerName);
+            pstmt.executeUpdate();
+        }        
     }
     
     /**
@@ -251,7 +260,11 @@ public class OrderJDBC
      */
     public void deleteCustomer(String customerId) throws SQLException
     {
-        // TODO: Use a PreparedStatement for this DELETE.
+        String sql = "DELETE FROM customer WHERE customerId = ?";
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, customerId);
+            pstmt.executeUpdate();
+        }
     }
     
     /**
@@ -261,7 +274,12 @@ public class OrderJDBC
      */
     public void updateCustomer(String customerId, String customerName) throws SQLException
     {
-        // TODO: Use a PreparedStatement for this UPDATE.        
+        String sql = "UPDATE customer SET customerName = ? WHERE customerId = ?";
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, customerName);
+            pstmt.setString(2, customerId);
+            pstmt.executeUpdate();
+        }        
     }
     
     /**
