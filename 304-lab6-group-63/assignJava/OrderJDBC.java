@@ -290,7 +290,16 @@ public class OrderJDBC
      */    
     public void newOrder(String orderId, String customerId, String orderDate, String employeeId) throws SQLException
     {
-        // TODO: Use a PreparedStatement for this INSERT.                        
+        try(Connection connection = connect(); Statement stmt = connection.createStatement();)
+        {
+            String SQL = "INSERT INTO 'Order' (OrderID, CustomerID, OrderDate, EmployeeID) VALUES (?,?,?,?)";
+            PreparedStatement pstmt = connection.prepareStatement(SQL);
+            pstmt.setString(1, orderId);
+            pstmt.setString(2, customerId);
+            pstmt.setString(3, orderDate);
+            pstmt.setString(4, employeeId);
+            pstmt.executeUpdate();
+        }                     
     }
     
     /**
@@ -301,7 +310,16 @@ public class OrderJDBC
      */    
     public void newLineItem(String orderId, String productId, int quantity, String price) throws SQLException
     {               
-        // TODO: Use a PreparedStatement for this INSERT.        
+        try(Connection connection = connect(); Statement stmt = connection.createStatement();)
+        {
+            String SQL = "INSERT INTO OrderProduct(OrderID, ProductID, Quantity, Price) VALUES (?,?,?,?)";
+            PreparedStatement pstmt = connection.prepareStatement(SQL);
+            pstmt.setString(1, orderId);
+            pstmt.setString(2, productId);
+            pstmt.setInt(3, quantity);
+            pstmt.setString(4, price);
+            pstmt.executeUpdate();
+        }      
     }
     
     /**
@@ -312,7 +330,14 @@ public class OrderJDBC
      */    
     public void updateOrderTotal(String orderId, BigDecimal total) throws SQLException
     {               
-        // TODO: Use a PreparedStatement for this UPDATE.        
+        try(Connection connection = connect(); Statement stmt = connection.createStatement();)
+        {
+            String SQL = "UPDATE 'Orders' SET 'OrderID' = ? WHERE 'Total' =?";
+            PreparedStatement pstmt = connection.prepareStatement(SQL);
+            pstmt.setString(1, orderId);
+            pstmt.setBigDecimal(2, total);
+            pstmt.executeUpdate();
+        }        
     }	
     
     
@@ -327,8 +352,16 @@ public class OrderJDBC
     public ResultSet query1() throws SQLException
     {
         System.out.println("\nExecuting query #1.");
-        // TODO: Execute the SQL query and return a ResultSet.
-        return null;
+
+        ResultSet rst;
+        try(Connection connection = connect(); Statement stmt = connection.createStatement();)
+        {
+            String SQL = "SELECT Product.ProductID FROM Product LEFT OUTER JOIN OrderedProduct ON Product.ProductID = OrderedProduct.ProductID WHERE OrderID IS NULL";
+             rst = stmt.executeQuery(SQL);
+            
+        }
+
+        return rst;
     }
     
     /**
@@ -342,8 +375,14 @@ public class OrderJDBC
     public ResultSet query2() throws SQLException
     {
         System.out.println("\nExecuting query #2.");
-        // TODO: Execute the SQL query and return a ResultSet.
-        return null;   
+
+         ResultSet rst;
+        try(Connection connection = connect(); Statement stmt = connection.createStatement();){
+
+            String SQL = "SELECT Orders.OrderId, Total From Orders JOIN (SELECT OrderId, SUM(Quantity * Price)AS totalAmount  FROM OrderedProduct GROUP BY OrderId) AS totalOrders ON Orders.OrderId = totalOrders.OrderId WHERE totalAmount <> Total";
+            rst = stmt.executeQuery(SQL);
+        }
+        return rst;   
     }
     
     /**
@@ -361,8 +400,15 @@ public class OrderJDBC
     public ResultSet query3() throws SQLException
     {
         System.out.println("\nExecuting query #3.");
-        // TODO: Execute the SQL query and return a ResultSet.
-        return null;      
+
+         ResultSet rst;
+        try(Connection connection = connect(); Statement stmt = connection.createStatement();)
+        {
+            String SQL ="SELECT Customer.CustomerId,CustomerName, AVG(Quantity) AS avgTotal FROM Customer JOIN Orders ON Customer.CustomerId = Orders.CustomerId JOIN OrderedProduct ON OrderedProduct.OrderId = Orders.OrderId WHERE OrderDate >= '2024-01-01'GROUP BY Customer.CustomerId, CustomerName HAVING COUNT(DISTINCT Orders.OrderId) >= 2 ORDER BY Customer.CustomerId";
+            rst = stmt.executeQuery(SQL);
+        }
+        
+        return rst;      
     }
     
 	/**
@@ -378,8 +424,14 @@ public class OrderJDBC
 	public ResultSet query4() throws SQLException
 	{
 		System.out.println("\nExecuting query #4.");
-        // TODO: Execute the SQL query and return a ResultSet.
-        return null;	
+
+        ResultSet rst;
+        try(Connection connection = connect(); Statement stmt = connection.createStatement();)
+        {
+            String SQL = "SELECT Employee.EmployeeId,EmployeeName, COUNT(Quantity) AS numOrders FROM Employee JOIN Orders ON Employee.EmployeeId = Orders.EmployeeId JOIN OrderedProduct ON OrderedProduct.OrderId = Orders.OrderId WHERE 5 >= ANY (SELECT Quantity FROM OrderedProduct WHERE OrderId IN (SELECT OrderId FROM OrderedProduct GROUP BY OrderId)) GROUP BY Employee.EmployeeId,EmployeeName HAVING numOrders >=2";
+            rst = stmt.executeQuery(SQL);
+        }
+        return rst;	
 	}
 		
 	/*
